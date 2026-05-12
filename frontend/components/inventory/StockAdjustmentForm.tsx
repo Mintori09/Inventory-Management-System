@@ -21,7 +21,7 @@ type Props = {
 export function StockAdjustmentForm({ products, onSubmit, isSubmitting }: Props) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<AdjustStockFormValues>({
+  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<AdjustStockFormValues>({
     resolver: zodResolver(adjustStockSchema),
   });
 
@@ -70,12 +70,7 @@ export function StockAdjustmentForm({ products, onSubmit, isSubmitting }: Props)
                   ? "border-success bg-success/5 text-success"
                   : "border-gray-300 text-gray-600 hover:bg-gray-50"
               )}
-              onClick={() => {
-                const nativeSetter = Object.getOwnPropertyDescriptor(
-                  window.HTMLSelectElement.prototype, "value"
-                )?.set;
-                // handled by the select below
-              }}
+              onClick={() => setValue("adjustmentType", "increase")}
             >
               Tăng
             </button>
@@ -87,6 +82,7 @@ export function StockAdjustmentForm({ products, onSubmit, isSubmitting }: Props)
                   ? "border-danger bg-danger/5 text-danger"
                   : "border-gray-300 text-gray-600 hover:bg-gray-50"
               )}
+              onClick={() => setValue("adjustmentType", "decrease")}
             >
               Giảm
             </button>

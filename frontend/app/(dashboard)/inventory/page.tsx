@@ -10,7 +10,6 @@ import { Select } from "@/components/ui/Select";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ExportExcelButton } from "@/components/ui/ExportExcelButton";
 import { useDebounce } from "@/hooks/useDebounce";
-import { useEffect } from "react";
 
 export default function InventoryPage() {
   const router = useRouter();
@@ -60,7 +59,12 @@ export default function InventoryPage() {
         />
       </div>
 
-      <StockSummaryCard isLoading={isLoading} />
+      <StockSummaryCard
+        isLoading={isLoading}
+        totalProducts={data?.items.length}
+        lowStockCount={data?.items.filter((i: any) => i.stockStatus === "low_stock").length}
+        outOfStockCount={data?.items.filter((i: any) => i.stockStatus === "out_of_stock").length}
+      />
 
       {!isLoading && data?.items.length === 0 ? (
         <EmptyState title="Không có dữ liệu tồn kho" />

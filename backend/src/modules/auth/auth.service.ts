@@ -18,7 +18,7 @@ export async function login(email: string, password: string) {
   }
 
   if (!user.isActive) {
-    throw new ForbiddenError("Tài khoản đã bị khóa");
+    throw new UnauthorizedError("Tài khoản đã bị khóa");
   }
 
   const isPasswordValid = await comparePassword(password, user.passwordHash);

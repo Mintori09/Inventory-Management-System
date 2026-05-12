@@ -15,7 +15,7 @@ export async function findUsers(query: {
     query.limit ? Number(query.limit) : undefined
   );
 
-  const where: Prisma.UserWhereInput = {};
+  const where: Prisma.UserWhereInput = { isActive: true };
 
   if (search) {
     where.OR = [

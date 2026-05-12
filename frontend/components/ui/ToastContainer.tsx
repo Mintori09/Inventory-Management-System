@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/useToast";
 import { CheckCircle, AlertCircle, Info, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -20,16 +19,7 @@ const colorMap = {
 };
 
 export function ToastContainer() {
-  const { toasts, subscribe } = useToast();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    const unsub = subscribe();
-    return unsub;
-  }, [subscribe]);
-
-  if (!mounted) return null;
+  const { toasts } = useToast();
 
   return (
     <div className="fixed right-4 top-4 z-[100] flex flex-col gap-2">

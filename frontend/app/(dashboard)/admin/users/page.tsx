@@ -13,7 +13,6 @@ import { ExportExcelButton } from "@/components/ui/ExportExcelButton";
 import { Plus, Users as UsersIcon } from "lucide-react";
 import { usePagination } from "@/hooks/usePagination";
 import { useDebounce } from "@/hooks/useDebounce";
-import { useEffect } from "react";
 import { USER_ROLE_OPTIONS } from "@/lib/constants";
 import Link from "next/link";
 

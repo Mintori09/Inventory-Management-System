@@ -17,7 +17,7 @@ export async function findProducts(query: {
     query.limit ? Number(query.limit) : undefined
   );
 
-  const where: Prisma.ProductWhereInput = {};
+  const where: Prisma.ProductWhereInput = { isActive: true };
 
   if (query.search) {
     where.OR = [

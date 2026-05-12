@@ -19,6 +19,30 @@ const loginLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+const refreshLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  skip: () => process.env.DISABLE_RATE_LIMIT === "true",
+  message: {
+    success: false,
+    message: "Quá nhiều yêu cầu. Vui lòng thử lại sau 15 phút.",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const logoutLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  skip: () => process.env.DISABLE_RATE_LIMIT === "true",
+  message: {
+    success: false,
+    message: "Quá nhiều yêu cầu. Vui lòng thử lại sau 15 phút.",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 /**
  * @openapi
  * /api/auth/login:
@@ -75,7 +99,7 @@ router.post("/login", loginLimiter, validate(loginSchema), authController.login)
  *       400:
  *         description: Refresh token không hợp lệ
  */
-router.post("/refresh", validate(refreshTokenSchema), authController.refresh);
+router.post("/refresh", refreshLimiter, validate(refreshTokenSchema), authController.refresh);
 
 /**
  * @openapi
@@ -95,7 +119,7 @@ router.post("/refresh", validate(refreshTokenSchema), authController.refresh);
  *       200:
  *         description: Đăng xuất thành công
  */
-router.post("/logout", validate(logoutSchema), authController.logout);
+router.post("/logout", logoutLimiter, validate(logoutSchema), authController.logout);
 
 /**
  * @openapi

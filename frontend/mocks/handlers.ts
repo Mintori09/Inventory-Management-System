@@ -23,7 +23,7 @@ export const handlers = [
       success: true,
       data: {
         user: { id: user.id, fullName: user.fullName, email: user.email, role: user.role },
-        accessToken: "mock-token-" + user.id,
+        token: "mock-token-" + user.id,
       },
     });
   }),

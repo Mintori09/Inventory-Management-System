@@ -10,7 +10,6 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { ExportExcelButton } from "@/components/ui/ExportExcelButton";
 import { usePagination } from "@/hooks/usePagination";
 import { useDebounce } from "@/hooks/useDebounce";
-import { useEffect } from "react";
 
 export default function AuditLogsPage() {
   const { page, setPage } = usePagination();

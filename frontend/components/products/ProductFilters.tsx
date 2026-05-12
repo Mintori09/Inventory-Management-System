@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { STOCK_STATUS_OPTIONS } from "@/lib/constants";
 import { useDebounce } from "@/hooks/useDebounce";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import type { Category } from "@/types/category.type";
 import type { Supplier } from "@/types/supplier.type";
 import type { StockStatus } from "@/types/product.type";
@@ -29,9 +29,11 @@ export function ProductFilters({
 }: ProductFiltersProps) {
   const [localSearch, setLocalSearch] = useState(search);
   const debouncedSearch = useDebounce(localSearch, 300);
+  const onSearchChangeRef = useRef(onSearchChange);
+  useEffect(() => { onSearchChangeRef.current = onSearchChange; });
 
   useEffect(() => {
-    onSearchChange(debouncedSearch);
+    onSearchChangeRef.current(debouncedSearch);
   }, [debouncedSearch]);
 
   return (

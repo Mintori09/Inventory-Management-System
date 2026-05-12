@@ -1,38 +1,33 @@
-"use client";
-
-import { useState, useCallback } from "react";
+import { create } from "zustand";
 
 export type ToastType = "success" | "error" | "info" | "warning";
 
-type Toast = {
+type ToastItem = {
   id: string;
   type: ToastType;
   message: string;
 };
 
-let toastListeners: Array<(toasts: Toast[]) => void> = [];
-let toasts: Toast[] = [];
+type ToastStore = {
+  toasts: ToastItem[];
+  showToast: (message: string, type?: ToastType) => void;
+};
+
+const useToastStore = create<ToastStore>((set) => ({
+  toasts: [],
+  showToast: (message: string, type: ToastType = "info") => {
+    const id = Math.random().toString(36).slice(2);
+    set((state) => ({ toasts: [...state.toasts, { id, type, message }] }));
+    setTimeout(() => {
+      set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) }));
+    }, 4000);
+  },
+}));
 
 export function showToast(message: string, type: ToastType = "info") {
-  const id = Math.random().toString(36).slice(2);
-  const toast: Toast = { id, type, message };
-  toasts = [...toasts, toast];
-  toastListeners.forEach((fn) => fn(toasts));
-  setTimeout(() => {
-    toasts = toasts.filter((t) => t.id !== id);
-    toastListeners.forEach((fn) => fn(toasts));
-  }, 4000);
+  useToastStore.getState().showToast(message, type);
 }
 
 export function useToast() {
-  const [state, setState] = useState<Toast[]>([]);
-
-  const subscribe = useCallback(() => {
-    toastListeners.push(setState);
-    return () => {
-      toastListeners = toastListeners.filter((fn) => fn !== setState);
-    };
-  }, []);
-
-  return { toasts: state, subscribe };
+  return { toasts: useToastStore((s) => s.toasts) };
 }

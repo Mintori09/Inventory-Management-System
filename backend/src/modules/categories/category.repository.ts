@@ -1,7 +1,10 @@
 import { prisma } from "../../config/prisma";
 
-export async function findAll() {
-  return prisma.category.findMany({ orderBy: { name: "asc" } });
+export async function findAll(options?: { isActive?: boolean }) {
+  return prisma.category.findMany({
+    where: { isActive: options?.isActive ?? true },
+    orderBy: { name: "asc" },
+  });
 }
 
 export async function findById(id: number) {

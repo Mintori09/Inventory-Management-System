@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
 import { getStockStatusLabel } from "@/lib/format";
-import type { Product } from "@/types/product.type";
 
 const badgeVariantMap = {
   low_stock: "warning" as const,
@@ -11,8 +10,17 @@ const badgeVariantMap = {
   in_stock: "success" as const,
 };
 
+type StockAlertItem = {
+  id: number;
+  name: string;
+  sku: string;
+  currentStock: number;
+  minStock: number;
+  stockStatus: "in_stock" | "low_stock" | "out_of_stock";
+};
+
 type Props = {
-  data?: Product[];
+  data?: StockAlertItem[];
   isLoading: boolean;
 };
 

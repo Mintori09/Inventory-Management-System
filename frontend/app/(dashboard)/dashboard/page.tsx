@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
 import { queryKeys } from "@/lib/query-keys";
+import { useLowStock } from "@/hooks/useInventory";
 import { DashboardKpiCards } from "@/components/dashboard/DashboardKpiCards";
 import { RecentMovements } from "@/components/dashboard/RecentMovements";
 import { LowStockPreview } from "@/components/dashboard/LowStockPreview";
@@ -42,6 +43,8 @@ export default function DashboardPage() {
     queryFn: () => apiClient<CategoryStockData[]>("/dashboard/category-chart"),
   });
 
+  const { data: lowStockData, isLoading: lowStockLoading } = useLowStock();
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
@@ -64,7 +67,7 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <RecentMovements data={movements} isLoading={movementsLoading} />
-        <LowStockPreview isLoading={false} />
+        <LowStockPreview data={lowStockData?.items} isLoading={lowStockLoading} />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
