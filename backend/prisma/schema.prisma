@@ -1,0 +1,176 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  staff
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  fullName     String   @map("full_name")
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         Role     @default(staff)
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  products       Product[]
+  stockImports   StockImport[]   @relation("StockImportUser")
+  stockExports   StockExport[]   @relation("StockExportUser")
+  stockMovements StockMovement[] @relation("StockMovementUser")
+  auditLogs      AuditLog[]
+  refreshTokens  RefreshToken[]
+
+  @@map("users")
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  products Product[]
+
+  @@map("categories")
+}
+
+model Supplier {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String?
+  email     String?
+  address   String?
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  products     Product[]
+  stockImports StockImport[] @relation("StockImportSupplier")
+
+  @@map("suppliers")
+}
+
+model Product {
+  id           Int      @id @default(autoincrement())
+  categoryId   Int      @map("category_id")
+  supplierId   Int?     @map("supplier_id")
+  sku          String   @unique
+  name         String
+  description  String?
+  unit         String   @default("cái")
+  costPrice    Int      @default(0) @map("cost_price")
+  sellingPrice Int      @default(0) @map("selling_price")
+  currentStock Int      @default(0) @map("current_stock")
+  minStock     Int      @default(0) @map("min_stock")
+  imageUrl     String?  @map("image_url")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  category       Category        @relation(fields: [categoryId], references: [id])
+  supplier       Supplier?       @relation(fields: [supplierId], references: [id])
+  createdBy      User            @relation(fields: [createdById], references: [id])
+  createdById    Int             @map("created_by")
+  stockImports   StockImport[]
+  stockExports   StockExport[]
+  stockMovements StockMovement[]
+
+  @@map("products")
+}
+
+model StockImport {
+  id          Int      @id @default(autoincrement())
+  productId   Int      @map("product_id")
+  supplierId  Int?     @map("supplier_id")
+  quantity    Int
+  importPrice Int      @map("import_price")
+  totalAmount Int      @map("total_amount")
+  note        String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  product  Product   @relation(fields: [productId], references: [id])
+  supplier Supplier? @relation("StockImportSupplier", fields: [supplierId], references: [id])
+  createdBy User     @relation("StockImportUser", fields: [createdById], references: [id])
+  createdById Int    @map("created_by")
+
+  @@map("stock_imports")
+}
+
+model StockExport {
+  id          Int      @id @default(autoincrement())
+  productId   Int      @map("product_id")
+  quantity    Int
+  exportPrice Int      @map("export_price")
+  totalAmount Int      @map("total_amount")
+  note        String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  product   Product @relation(fields: [productId], references: [id])
+  createdBy User    @relation("StockExportUser", fields: [createdById], references: [id])
+  createdById Int   @map("created_by")
+
+  @@map("stock_exports")
+}
+
+enum MovementType {
+  import
+  export
+  adjustment
+}
+
+model StockMovement {
+  id             Int          @id @default(autoincrement())
+  productId      Int          @map("product_id")
+  type           MovementType
+  quantityChange Int          @map("quantity_change")
+  stockBefore    Int          @map("stock_before")
+  stockAfter     Int          @map("stock_after")
+  referenceType  String       @map("reference_type")
+  referenceId    Int          @map("reference_id")
+  note           String?
+  createdAt      DateTime     @default(now()) @map("created_at")
+
+  product   Product @relation(fields: [productId], references: [id])
+  createdBy User    @relation("StockMovementUser", fields: [createdById], references: [id])
+  createdById Int   @map("created_by")
+
+  @@map("stock_movements")
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int      @map("user_id")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  revokedAt DateTime? @map("revoked_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("refresh_tokens")
+}
+
+model AuditLog {
+  id          Int      @id @default(autoincrement())
+  action      String
+  tableName   String   @map("table_name")
+  recordId    Int      @map("record_id")
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user      User @relation(fields: [userId], references: [id])
+  userId    Int  @map("user_id")
+
+  @@map("audit_logs")
+}
