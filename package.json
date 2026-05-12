@@ -1,0 +1,34 @@
+{
+  "name": "inventory-management-system",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c blue,green \"pnpm --filter ./backend dev\" \"pnpm --filter ./frontend dev\"",
+    "build": "pnpm --filter ./backend build && pnpm --filter ./frontend build",
+    "start": "pnpm --filter ./backend start & pnpm --filter ./frontend start",
+    "typecheck": "pnpm --filter ./backend typecheck && pnpm --filter ./frontend typecheck",
+    "db:migrate": "pnpm --filter ./backend db:migrate",
+    "db:seed": "pnpm --filter ./backend db:seed",
+    "test": "pnpm --filter ./backend test && pnpm --filter ./frontend test",
+    "lint": "pnpm --filter ./frontend lint"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "bcrypt",
+      "esbuild",
+      "prisma"
+    ],
+    "ignoredBuiltDependencies": [
+      "@scarf/scarf"
+    ]
+  }
+}

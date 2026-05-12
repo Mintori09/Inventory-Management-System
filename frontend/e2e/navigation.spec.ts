@@ -10,12 +10,12 @@ test.describe("Navigation", () => {
   });
 
   test("admin sees all sidebar menu items", async ({ page }) => {
-    await expect(page.getByText(/sản phẩm/i)).toBeVisible();
-    await expect(page.getByText(/danh mục/i)).toBeVisible();
-    await expect(page.getByText(/nhà cung cấp/i)).toBeVisible();
-    await expect(page.getByText(/tồn kho/i)).toBeVisible();
-    await expect(page.getByText(/người dùng/i)).toBeVisible();
-    await expect(page.getByText(/nhật ký/i)).toBeVisible();
+    await expect(page.getByRole("link", { name: /sản phẩm/i })).toBeVisible();
+    await expect(page.getByRole("link", { name: /danh mục/i })).toBeVisible();
+    await expect(page.getByRole("link", { name: /nhà cung cấp/i })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Tồn kho", exact: true })).toBeVisible();
+    await expect(page.getByRole("link", { name: /người dùng/i })).toBeVisible();
+    await expect(page.getByRole("link", { name: /nhật ký/i })).toBeVisible();
   });
 
   test("navigates to products page", async ({ page }) => {

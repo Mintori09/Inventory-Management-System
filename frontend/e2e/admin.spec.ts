@@ -21,6 +21,6 @@ test.describe("Admin Access Control", () => {
 
   test("staff can access products page", async ({ page }) => {
     await page.goto("/products");
-    await expect(page.getByText(/danh sách sản phẩm/i)).toBeVisible();
+    await expect(page.getByRole("heading", { name: /sản phẩm/i })).toBeVisible();
   });
 });

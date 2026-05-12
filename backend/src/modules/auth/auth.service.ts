@@ -14,7 +14,7 @@ export async function login(email: string, password: string) {
   const user = await prisma.user.findUnique({ where: { email } });
 
   if (!user) {
-    throw new UnauthorizedError("Email hoặc mật khẩu không đúng");
+    throw new BadRequestError("Email hoặc mật khẩu không đúng");
   }
 
   if (!user.isActive) {
@@ -23,7 +23,7 @@ export async function login(email: string, password: string) {
 
   const isPasswordValid = await comparePassword(password, user.passwordHash);
   if (!isPasswordValid) {
-    throw new UnauthorizedError("Email hoặc mật khẩu không đúng");
+    throw new BadRequestError("Email hoặc mật khẩu không đúng");
   }
 
   const token = signToken({

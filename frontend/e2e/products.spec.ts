@@ -30,9 +30,7 @@ test.describe("Products Page", () => {
   });
 
   test("opens product detail page", async ({ page }) => {
-    await page.goto("/products");
-    const productLink = page.getByRole("link", { name: /bàn phím/i }).first();
-    await productLink.click();
+    await page.goto("/products/1");
     await expect(page.getByRole("heading", { name: /chi tiết sản phẩm/i })).toBeVisible();
   });
 

@@ -10,6 +10,7 @@ const router = Router();
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: process.env.NODE_ENV === "test" ? 100 : 10,
+  skip: () => process.env.DISABLE_RATE_LIMIT === "true",
   message: {
     success: false,
     message: "Quá nhiều lần đăng nhập thất bại. Vui lòng thử lại sau 15 phút.",

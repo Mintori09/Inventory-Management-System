@@ -12,7 +12,11 @@ import { Package } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, isAuthenticated, isLoading } = useAuth();
+  const { login, isAuthenticated, isLoading, initialize } = useAuth();
+
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
 
   const {
     register,
