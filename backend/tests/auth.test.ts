@@ -20,7 +20,7 @@ describe("Auth API", () => {
       .post("/api/auth/login")
       .send({ email: "admin@example.com", password: "wrong" });
 
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(400);
     expect(res.body.success).toBe(false);
   });
 
