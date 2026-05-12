@@ -25,28 +25,26 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-    defaults:
-      run:
-        working-directory: backend
-
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
-          cache-dependency-path: backend/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
 
       - run: pnpm install --frozen-lockfile
-      - run: npx prisma generate
-      - run: npx prisma migrate deploy
+      - run: pnpm --filter ./backend exec -- npx prisma generate
+      - run: pnpm --filter ./backend exec -- npx prisma migrate deploy
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/inventory_test
-      - run: pnpm db:seed
+      - run: pnpm --filter ./backend db:seed
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/inventory_test
-      - run: pnpm test
+      - run: pnpm --filter ./backend test
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/inventory_test
           JWT_SECRET: test-secret
@@ -55,21 +53,19 @@ jobs:
   frontend:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: frontend
-
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
-          cache-dependency-path: frontend/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
 
       - run: pnpm install --frozen-lockfile
-      - run: pnpm lint
-      - run: pnpm test
+      - run: pnpm --filter ./frontend lint
+      - run: pnpm --filter ./frontend test
         env:
           NEXT_PUBLIC_API_URL: http://localhost:4000/api
